@@ -1,13 +1,12 @@
 import { reactive } from 'vue'
+import type { AuthView } from '../types/api'
 
 const STORAGE_KEY = 'mboard-auth'
 
-type AuthState = {
+type AuthState = Omit<AuthView, 'userId' | 'role'> & {
   token: string
   userId: number | null
-  username: string
-  displayName: string
-  role: string
+  role: AuthView['role'] | ''
 }
 
 const state = reactive<AuthState>(load())
@@ -47,7 +46,7 @@ export function useAuthStore() {
     get isAdmin() {
       return state.role === 'ADMIN'
     },
-    set(payload: AuthState) {
+    set(payload: AuthView) {
       state.token = payload.token
       state.userId = payload.userId
       state.username = payload.username

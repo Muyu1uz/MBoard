@@ -24,8 +24,9 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import type { AlbumCardView } from '../types/api'
 
-defineProps<{ album: Record<string, any> }>()
+defineProps<{ album: AlbumCardView }>()
 
 const router = useRouter()
 </script>

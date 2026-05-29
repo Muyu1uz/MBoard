@@ -82,9 +82,10 @@ import { onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import StarRating from '../components/StarRating.vue'
 import { api } from '../lib/api'
+import type { AlbumDetailView } from '../types/api'
 
 const route = useRoute()
-const album = ref<any>(null)
+const album = ref<AlbumDetailView | null>(null)
 const comment = ref('')
 
 async function load() {

@@ -75,8 +75,9 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import AlbumCard from '../components/AlbumCard.vue'
 import { api } from '../lib/api'
+import type { AlbumCardView, GenreOptionView, HomeView, PagedView } from '../types/api'
 
-const LOCAL_GENRES = [
+const LOCAL_GENRES: GenreOptionView[] = [
   { code: 'pop', label: '流行' },
   { code: 'hiphop', label: '嘻哈' },
   { code: 'electronic', label: '电子' },
@@ -88,8 +89,8 @@ const LOCAL_GENRES = [
 ]
 
 const route = useRoute()
-const home = ref<any>(null)
-const albums = ref<any>(null)
+const home = ref<HomeView | null>(null)
+const albums = ref<PagedView<AlbumCardView> | null>(null)
 const currentGenre = ref('')
 const keyword = ref('')
 const page = ref(1)

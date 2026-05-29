@@ -1,12 +1,26 @@
 import { useAuthStore } from './auth'
+import type {
+  AdminDashboardView,
+  AlbumCardView,
+  AlbumDetailView,
+  AlbumQueryParams,
+  AlbumSaveRequest,
+  ApiResponse,
+  ArtistDetailView,
+  ArtistSaveRequest,
+  AuthView,
+  CommentView,
+  HomeView,
+  PagedView,
+  RatingView,
+  SongAdminView,
+  SongSaveRequest,
+  UploadView,
+  AlbumAdminView,
+  ArtistAdminView,
+} from '../types/api'
 
 const API_BASE = 'http://localhost:8080/api'
-
-type ApiResponse<T> = {
-  success: boolean
-  message: string
-  data: T
-}
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const auth = useAuthStore()
@@ -29,8 +43,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  getHome: () => request('/home'),
-  getAlbums: (params: { page?: number; size?: number; genre?: string; keyword?: string } = {}) => {
+  getHome: (): Promise<HomeView> => request('/home'),
+  getAlbums: (params: AlbumQueryParams = {}): Promise<PagedView<AlbumCardView>> => {
     const query = new URLSearchParams()
     query.set('page', String(params.page ?? 1))
     query.set('size', String(params.size ?? 12))
@@ -38,53 +52,53 @@ export const api = {
     if (params.keyword) query.set('keyword', params.keyword)
     return request(`/albums?${query.toString()}`)
   },
-  getAlbum: (id: number | string) => request(`/albums/${id}`),
+  getAlbum: (id: number | string): Promise<AlbumDetailView> => request(`/albums/${id}`),
   rateAlbum: (id: number | string, star: number) =>
-    request(`/albums/${id}/ratings`, {
+    request<RatingView>(`/albums/${id}/ratings`, {
       method: 'POST',
       body: JSON.stringify({ star }),
     }),
   rateSong: (id: number | string, star: number) =>
-    request(`/songs/${id}/ratings`, {
+    request<RatingView>(`/songs/${id}/ratings`, {
       method: 'POST',
       body: JSON.stringify({ star }),
     }),
   createComment: (id: number | string, content: string) =>
-    request(`/albums/${id}/comments`, {
+    request<CommentView>(`/albums/${id}/comments`, {
       method: 'POST',
       body: JSON.stringify({ content }),
     }),
   login: (username: string, password: string) =>
-    request('/auth/login', {
+    request<AuthView>('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
     }),
   register: (username: string, displayName: string, password: string) =>
-    request('/auth/register', {
+    request<AuthView>('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ username, displayName, password }),
     }),
-  getArtist: (id: number | string) => request(`/artists/${id}`),
-  getAdminDashboard: () => request('/admin/dashboard'),
-  createArtist: (payload: Record<string, unknown>) =>
-    request('/admin/artists', {
+  getArtist: (id: number | string): Promise<ArtistDetailView> => request(`/artists/${id}`),
+  getAdminDashboard: (): Promise<AdminDashboardView> => request('/admin/dashboard'),
+  createArtist: (payload: ArtistSaveRequest) =>
+    request<ArtistAdminView>('/admin/artists', {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
-  createAlbum: (payload: Record<string, unknown>) =>
-    request('/admin/albums', {
+  createAlbum: (payload: AlbumSaveRequest) =>
+    request<AlbumAdminView>('/admin/albums', {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
-  createSong: (payload: Record<string, unknown>) =>
-    request('/admin/songs', {
+  createSong: (payload: SongSaveRequest) =>
+    request<SongAdminView>('/admin/songs', {
       method: 'POST',
       body: JSON.stringify(payload),
     }),
   uploadImage: (file: File) => {
     const formData = new FormData()
     formData.append('file', file)
-    return request<{ url: string }>('/admin/uploads/images', {
+    return request<UploadView>('/admin/uploads/images', {
       method: 'POST',
       body: formData,
     })

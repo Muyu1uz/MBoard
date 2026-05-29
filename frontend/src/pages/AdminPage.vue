@@ -110,9 +110,10 @@
 import { onMounted, reactive, ref } from 'vue'
 import { api } from '../lib/api'
 import { useAuthStore } from '../lib/auth'
+import type { AdminDashboardView } from '../types/api'
 
 const auth = useAuthStore()
-const dashboard = ref<any>(null)
+const dashboard = ref<AdminDashboardView | null>(null)
 const message = ref('')
 const artistForm = reactive({ name: '', avatarUrl: '', bio: '' })
 const albumForm = reactive({

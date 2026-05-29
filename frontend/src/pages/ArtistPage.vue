@@ -25,9 +25,10 @@ import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import AlbumCard from '../components/AlbumCard.vue'
 import { api } from '../lib/api'
+import type { ArtistDetailView } from '../types/api'
 
 const route = useRoute()
-const artist = ref<any>(null)
+const artist = ref<ArtistDetailView | null>(null)
 
 onMounted(async () => {
   artist.value = await api.getArtist(route.params.id as string)
